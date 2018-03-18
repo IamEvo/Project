@@ -2,13 +2,12 @@ import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 
-public class Communication implements Interfaces.Communication{
-
+public class Communication implements Interfaces.Communication {
 
     private int code;
     private String username;
 
-    private Communication() {
+    public Communication() {
     }
 
     public Communication(int code, String username) {
@@ -25,6 +24,14 @@ public class Communication implements Interfaces.Communication{
         return communication;
     }
 
+    static int inputtype(DataInputStream din) throws IOException {
+        int message_code = din.readInt();
+        //communication.username = din.readUTF();
+
+        System.out.println("read " + message_code);
+        return message_code;
+    }
+
     public void write(DataOutputStream dout) throws IOException {
         dout.writeInt(code);
         dout.writeUTF(username);
@@ -33,11 +40,11 @@ public class Communication implements Interfaces.Communication{
         dout.flush();
     }
 
-    public int code() {
+    public int getcode() {
         return code;
     }
 
-    public void code(int code) {
+    public void setcode(int code) {
         this.code = code;
     }
 

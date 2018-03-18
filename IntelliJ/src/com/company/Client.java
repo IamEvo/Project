@@ -110,15 +110,17 @@ public class Client extends JFrame implements Runnable {
     public void run() {
         try {
             while (true) {
-                //Posting posting = Posting.read(din);
+
+                Posting posting = Posting.read(din);
 
                 Response  response= Response.read(din);
-                if (response.code() == 1){
+                if (response.getcode() == 1){
                     System.out.println(response.toString());
                 }
-                if (response.code() == 2){
+                if (response.getcode() == 2){
                     System.out.println(response.toString());
                 }
+
 
                 //postings.add(posting);
             }
@@ -132,6 +134,15 @@ public class Client extends JFrame implements Runnable {
         try {
             posting.write(dout);
         } catch (IOException ie) {
+            ie.printStackTrace();
+        }
+    }
+
+    public void message_post(Posting posting){
+        try{
+            dout.write(1);
+            //posting.write(dout);
+        }catch(IOException ie){
             ie.printStackTrace();
         }
     }

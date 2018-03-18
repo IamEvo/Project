@@ -7,9 +7,9 @@ public interface Communication {
 
     public void write(DataOutputStream dout)throws IOException;
 
-    public int code();
+    public int getcode();
 
-    public void code(int code);
+    public void setcode(int code);
 
     public String username();
 

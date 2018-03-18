@@ -107,6 +107,11 @@ public class Server implements Runnable {
 
                 ConnectionProcessor cp = new ConnectionProcessor(this, socket);
                 connections.add(cp);
+
+//                for (Iterator it = this.getConnections(); it.hasNext(); ) {
+//                    System.out.println("list " + it);
+//                }
+
             }
         } catch (GeneralSecurityException gse) {
             gse.printStackTrace();

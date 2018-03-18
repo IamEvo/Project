@@ -47,11 +47,13 @@ public class Response implements Communication {
         dout.flush();
     }
 
-    public int code() {
+    @Override
+    public int getcode() {
         return code;
     }
 
-    public void code(int code) {
+    @Override
+    public void setcode(int code) {
         this.code = code;
     }
 

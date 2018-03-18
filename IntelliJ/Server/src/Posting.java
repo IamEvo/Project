@@ -19,7 +19,7 @@ public class Posting {
 
     static Posting read(DataInputStream din) throws IOException {
         Posting posting = new Posting();
-        posting.code = din.readInt();
+        //posting.code = din.readInt();
         posting.username = din.readUTF();
         posting.password = din.readUTF();
 

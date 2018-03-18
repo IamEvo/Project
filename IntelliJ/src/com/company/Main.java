@@ -28,7 +28,7 @@ public class Main {
 
             Client client = new Client(host, port);
 
-            registerTest(client);
+            loginTest(client);
 
             System.out.println("Done.");
         } catch (Exception var2) {
@@ -40,12 +40,11 @@ public class Main {
     public static void loginTest(Client client){
         Login login_session = new Login();
 
-        String username = "Jamie";
-        String password = "mkng1A@gwstrgtg";
+        String username = "Sam";
+        String password = "mkyong1A@gwstrgtg";
 
         Boolean result = login_session.login(client, username, password);
 
-        System.out.println(result);
     }
 
     public static void registerTest(Client client){

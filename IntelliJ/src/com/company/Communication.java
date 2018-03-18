@@ -10,7 +10,7 @@ public class Communication implements Interfaces.Communication{
     private int code;
     private String username;
 
-    private Communication() {
+    public Communication() {
     }
 
     public Communication(int code, String username) {
@@ -35,11 +35,11 @@ public class Communication implements Interfaces.Communication{
         dout.flush();
     }
 
-    public int code() {
+    public int getcode() {
         return code;
     }
 
-    public void code(int code) {
+    public void setcode(int code) {
         this.code = code;
     }
 

@@ -17,6 +17,7 @@ public class ConnectionProcessor implements Runnable {
      * Connection to the client
      */
     private DataInputStream din;
+    private DataInputStream din2;
 
     /**
      * Connection to the client
@@ -59,9 +60,7 @@ public class ConnectionProcessor implements Runnable {
     private void sendToOtherClients(Posting posting) throws IOException {
         for (Iterator it = server.getConnections(); it.hasNext(); ) {
 
-
             ConnectionProcessor cp = (ConnectionProcessor) it.next();
-
 
             if (cp == this) {
                 System.out.println("forward " + this + " " + cp + " (skip)");
@@ -99,33 +98,51 @@ public class ConnectionProcessor implements Runnable {
      */
     public void run() {
         try {
+            Boolean verified = false;
             InputStream in = socket.getInputStream();
             OutputStream out = socket.getOutputStream();
 
             din = new DataInputStream(in);
+            din2 = new DataInputStream(in);
             dout = new DataOutputStream(out);
 
 
 
             while (true) {
 
-                //process login or register
-                Posting posting = Posting.read(din);
-                //sendPosting(posting);
+                int code = Communication.inputtype(din);
+                //Posting posting = Posting.read( din );
+                //posting.code(code);
+
+//                int code = din.readInt();
+//                System.out.println(code);
+//                Posting posting = Posting.read( din );
 
                 DataController sql = new DataController();
-                if (posting.code() == 1) {
-                    Boolean[] sql_errors = {true, true};
+//                din2 = din;
+                //process login or register
+//                String temp = din.readUTF();
+//                Posting posting = Posting.read( din );
+                //Communication communication = Communication.read(din2);
+
+//                System.out.println(temp);
+                //System.out.println(communication.getcode());
+                if (code == 1) {
+                    Posting posting = Posting.read(din);
+                    posting.code(code);
+                    Boolean[] sql_errors;
                     sql_errors = sql.register(posting.username(), posting.password());
                     Response response = new Response(1, sql_errors[0], sql_errors[1], posting.username());
                     sendResponse(response);
-
                     if(sql_errors[0] == false || sql_errors[0] == false){
                         server.removeConnection(this);
+                    }else{
+                        verified = true;
                     }
-
-                } else if(posting.code() == 2){
-                    Boolean[] sql_errors = {true, true};
+                } else if(code == 2){
+                    Posting posting = Posting.read(din);
+                    posting.code(code);
+                    Boolean[] sql_errors;
                     sql_errors = sql.login(posting.username(), posting.password());
                     Response response = new Response(2, sql_errors[0], sql_errors[1], posting.username());
                     sendResponse(response);
@@ -133,8 +150,16 @@ public class ConnectionProcessor implements Runnable {
                     if(sql_errors[0] == false || sql_errors[0] == false){
                         server.removeConnection(this);
                     }
+                    verified = true;
+                }else if(code == 3){
+                    if(verified == true){
+                        ConversationRequest conversationRequest = new ConversationRequest();
+                        conversationRequest = ConversationRequest.read(din);
+                        conversationRequest.toString();
+                    }
                 }
-
+                server.getConnections();
+                //sendPosting(posting);
                 //processPosting(posting);
                 //sendExistingPostings();
             }

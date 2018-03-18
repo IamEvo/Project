@@ -46,7 +46,12 @@ public class Login {
 
 
     public Boolean login(Client client, String username, String password){
+
+        Posting posting = new Posting(2,username, password);
+        client.newPosting(posting);
+
         return false;
+
     }
 
     public static void register_errors(Boolean[] errors){
