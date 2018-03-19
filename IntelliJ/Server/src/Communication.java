@@ -28,7 +28,7 @@ public class Communication implements Interfaces.Communication {
         int message_code = din.readInt();
         //communication.username = din.readUTF();
 
-        System.out.println("read " + message_code);
+        System.out.println("message code is " + message_code);
         return message_code;
     }
 

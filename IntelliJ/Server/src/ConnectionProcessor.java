@@ -1,5 +1,6 @@
 import java.io.*;
 import java.net.Socket;
+import java.util.ArrayList;
 import java.util.Iterator;
 
 public class ConnectionProcessor implements Runnable {
@@ -13,6 +14,7 @@ public class ConnectionProcessor implements Runnable {
      */
     private Socket socket;
 
+    private Boolean verified;
     /**
      * Connection to the client
      */
@@ -98,7 +100,6 @@ public class ConnectionProcessor implements Runnable {
      */
     public void run() {
         try {
-            Boolean verified = false;
             InputStream in = socket.getInputStream();
             OutputStream out = socket.getOutputStream();
 
@@ -109,7 +110,7 @@ public class ConnectionProcessor implements Runnable {
 
 
             while (true) {
-
+                DataController sql = new DataController();
                 int code = Communication.inputtype(din);
                 //Posting posting = Posting.read( din );
                 //posting.code(code);
@@ -118,46 +119,68 @@ public class ConnectionProcessor implements Runnable {
 //                System.out.println(code);
 //                Posting posting = Posting.read( din );
 
-                DataController sql = new DataController();
+
 //                din2 = din;
                 //process login or register
 //                String temp = din.readUTF();
 //                Posting posting = Posting.read( din );
                 //Communication communication = Communication.read(din2);
 
-//                System.out.println(temp);
-                //System.out.println(communication.getcode());
-                if (code == 1) {
-                    Posting posting = Posting.read(din);
-                    posting.code(code);
-                    Boolean[] sql_errors;
-                    sql_errors = sql.register(posting.username(), posting.password());
-                    Response response = new Response(1, sql_errors[0], sql_errors[1], posting.username());
-                    sendResponse(response);
-                    if(sql_errors[0] == false || sql_errors[0] == false){
-                        server.removeConnection(this);
-                    }else{
-                        verified = true;
+                switch(code) {
+                    case 1 : code = 1;{
+                        Posting posting = Posting.read(din);
+                        posting.code(code);
+                        Boolean[] sql_errors;
+                        sql_errors = sql.register(posting.username(), posting.password());
+                        Response response = new Response(1, sql_errors[0], sql_errors[1], posting.username());
+                        sendResponse(response);
+                        if (sql_errors[0] == false || sql_errors[0] == false) {
+                            server.removeConnection(this);
+                        } else {
+                            verified = true;
+                        }
+                        break;
                     }
-                } else if(code == 2){
-                    Posting posting = Posting.read(din);
-                    posting.code(code);
-                    Boolean[] sql_errors;
-                    sql_errors = sql.login(posting.username(), posting.password());
-                    Response response = new Response(2, sql_errors[0], sql_errors[1], posting.username());
-                    sendResponse(response);
-
-                    if(sql_errors[0] == false || sql_errors[0] == false){
-                        server.removeConnection(this);
+                    case 2 : code = 2;{
+                        Posting posting = Posting.read(din);
+                        posting.code(code);
+                        Boolean[] sql_errors;
+                        sql_errors = sql.login(posting.username(), posting.password());
+                        Response response = new Response(2, sql_errors[0], sql_errors[1], posting.username());
+                        sendResponse(response);
+                        if (sql_errors[0] == false || sql_errors[0] == false) {
+                            server.removeConnection(this);
+                        }else{
+                            verified = true;
+                        }
+                        AuthenticatedConnections authenticatedConnections= new AuthenticatedConnections(socket, posting.username());
+                        server.addAuthenticatedUser(authenticatedConnections);
+                        break;
                     }
-                    verified = true;
-                }else if(code == 3){
-                    if(verified == true){
-                        ConversationRequest conversationRequest = new ConversationRequest();
-                        conversationRequest = ConversationRequest.read(din);
-                        conversationRequest.toString();
+                    case 3 : code = 3;{
+                        if(verified == true){
+                            ConversationRequest conversationRequest = ConversationRequest.read(din);
+                            conversationRequest.setcode(code);
+                            ArrayList<AuthenticatedConnections> ConnectedUsers = server.getAuthenticatedConnections();
+                            Boolean user_exists = null;
+                            for (AuthenticatedConnections temp: ConnectedUsers) {
+                                if(conversationRequest.getRecipientUsername() == temp.getUsername()){
+                                    Response response = new Response(3, true, null, temp.getSocket().toString());
+                                    sendResponse(response);
+                                    user_exists = true;
+                                }else if(user_exists == true){
+                                    Socket tempsocket = temp.getSocket();
+                                    String hostAndPort = tempsocket.getInetAddress().getHostAddress();
+                                    hostAndPort = hostAndPort + ":" + tempsocket.getPort();
+                                    Response response = new Response(3, false, null, hostAndPort);
+                                    sendResponse(response);
+                                }
+                            }
+                        }
+                        break;
                     }
                 }
+
                 server.getConnections();
                 //sendPosting(posting);
                 //processPosting(posting);

@@ -35,6 +35,14 @@ public class Communication implements Interfaces.Communication{
         dout.flush();
     }
 
+    static int inputtype(DataInputStream din) throws IOException {
+        int message_code = din.readInt();
+        //communication.username = din.readUTF();
+
+        System.out.println("read " + message_code);
+        return message_code;
+    }
+
     public int getcode() {
         return code;
     }

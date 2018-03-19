@@ -6,6 +6,7 @@
 package com.company;
 
 import java.security.SecureRandom;
+import java.util.concurrent.TimeUnit;
 
 public class Main {
 
@@ -30,6 +31,11 @@ public class Main {
 
             loginTest(client);
 
+            TimeUnit.SECONDS.sleep(5);
+
+            ConversationRequest conversationRequest = new ConversationRequest(3, "Sam", "Jamie");
+            client.newConversationRequest(conversationRequest);
+
             System.out.println("Done.");
         } catch (Exception var2) {
             System.out.println("ERROR: " + var2);
@@ -50,7 +56,7 @@ public class Main {
     public static void registerTest(Client client){
         Login login_session = new Login();
 
-        String username = "Sam";
+        String username = "Jamie";
         String password = "mkyong1A@gwstrgtg";
         String password2 = "mkyong1A@gwstrgtg";
 

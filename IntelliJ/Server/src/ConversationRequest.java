@@ -2,49 +2,67 @@ import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 
-public class ConversationRequest extends Communication implements Interfaces.ConversationRequest{
+public class ConversationRequest {
 
+    private int code;
+    private String senderusername;
     private String recipientusername;
 
-    public ConversationRequest() {
+
+    private ConversationRequest() {
     }
 
     public ConversationRequest(int code, String username, String recipientusername) {
-        super(code, username);
+        this.code = code;
+        this.senderusername = username;
         this.recipientusername = recipientusername;
     }
 
     static ConversationRequest read(DataInputStream din) throws IOException {
         ConversationRequest conversationRequest = new ConversationRequest();
-        conversationRequest.setcode(din.readInt());
-        conversationRequest.username(din.readUTF());
+        //conversationRequest.code = din.readInt() ;
+        conversationRequest.senderusername = din.readUTF();
         conversationRequest.recipientusername = din.readUTF();
 
-        conversationRequest.toString();
+        System.out.println("login/register information read: " + conversationRequest);
         return conversationRequest;
     }
 
-    public void write(DataOutputStream dout) throws IOException {
-        dout.writeInt(this.getcode());
-        dout.writeUTF(this.username());
-        dout.writeUTF(recipientusername);
+//    public void write(DataOutputStream dout) throws IOException {
+//        dout.writeInt(code);
+//        dout.writeUTF(senderusername);
+//        dout.writeUTF(recipientusername);
+//
+//        System.out.println("wrote " + this);
+//        dout.flush();
+//    }
 
-        System.out.println("wrote " + this);
-        dout.flush();
-    }
-
-    @Override
     public int getcode() {
-        return 0;
+        return code;
     }
 
-    @Override
     public void setcode(int code) {
+        this.code = code;
+    }
 
+    public String getSenderUsername(String username) {
+        return senderusername;
+    }
+
+    public void setSenderUsername(String username) {
+        this.senderusername = username;
+    }
+
+    public String getRecipientUsername() {
+        return recipientusername;
+    }
+
+    public void setRecipientUsername(String username) {
+        this.recipientusername = username;
     }
 
     public String toString() {
-        return this.getcode()+ this.username() + recipientusername;
+        return code + senderusername + recipientusername;
     }
 
 

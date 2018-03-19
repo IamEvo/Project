@@ -6,6 +6,7 @@ import java.io.*;
 import java.security.GeneralSecurityException;
 import java.security.KeyStore;
 import java.security.SecureRandom;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -110,19 +111,42 @@ public class Client extends JFrame implements Runnable {
     public void run() {
         try {
             while (true) {
+                int code = Communication.inputtype(din);
 
-                Posting posting = Posting.read(din);
+//                if (code == 1){
+//                    Response  response= Response.read(din);
+//                    response.setcode(code);
+//                    System.out.println(response.toString());
+//                }else if (code == 2){
+//                    Response  response= Response.read(din);
+//                    response.setcode(code);
+//                    System.out.println(response.toString());
+//                }
 
-                Response  response= Response.read(din);
-                if (response.getcode() == 1){
-                    System.out.println(response.toString());
+                switch(code) {
+                    case 1 : code = 1;{
+                        Response  response= Response.read(din);
+                        response.setcode(code);
+                        System.out.println(response.toString());
+                        break;
+                    }
+                    case 2 : code = 2;{
+                        Response  response= Response.read(din);
+                        response.setcode(code);
+                        System.out.println(response.toString());
+                        break;
+                    }
+                    case 3 : code = 3;{
+                        Response  response= Response.read(din);
+                        response.setcode(code);
+                        String hostAndPort = response.username();
+                        String host = hostAndPort.substring(0, hostAndPort.indexOf(':'));
+                        int port = Integer.parseInt(hostAndPort.substring(hostAndPort.indexOf(':') + 1));
+                        System.out.println(response.toString());
+                        Client client = new Client(host , port);
+                        break;
+                    }
                 }
-                if (response.getcode() == 2){
-                    System.out.println(response.toString());
-                }
-
-
-                //postings.add(posting);
             }
         } catch (IOException ie) {
             ie.printStackTrace();
@@ -138,11 +162,19 @@ public class Client extends JFrame implements Runnable {
         }
     }
 
-    public void message_post(Posting posting){
+    public void message_post(Client client, Message message){
         try{
             dout.write(1);
             //posting.write(dout);
         }catch(IOException ie){
+            ie.printStackTrace();
+        }
+    }
+
+    public void newConversationRequest(ConversationRequest conversationRequest) {
+        try {
+            conversationRequest.write(dout);
+        } catch (IOException ie) {
             ie.printStackTrace();
         }
     }

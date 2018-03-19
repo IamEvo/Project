@@ -28,7 +28,7 @@ public class Response implements Communication {
 
     static Response read(DataInputStream din) throws IOException {
         Response response = new Response();
-        response.code = din.readInt();
+        //response.code = din.readInt();
         response.errorcode1 = din.readBoolean();
         response.errorcode2 = din.readBoolean();
         response.username = din.readUTF();

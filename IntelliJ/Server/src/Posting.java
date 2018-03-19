@@ -23,7 +23,7 @@ public class Posting {
         posting.username = din.readUTF();
         posting.password = din.readUTF();
 
-        System.out.println("read " + posting);
+        System.out.println("login/register information read: " + posting);
         return posting;
     }
 

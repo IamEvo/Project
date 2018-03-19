@@ -5,6 +5,7 @@ import java.net.Socket;
 import java.security.GeneralSecurityException;
 import java.security.KeyStore;
 import java.security.SecureRandom;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
@@ -51,6 +52,11 @@ public class Server implements Runnable {
     static private SecureRandom secureRandom;
 
     /**
+     * Arraylist of users that are logged in
+     */
+    ArrayList<AuthenticatedConnections> ConnectedUsers =new ArrayList<AuthenticatedConnections>();
+
+    /**
      * Create a Server that listens on the given port.
      * Start the background listening thread
      */
@@ -90,6 +96,8 @@ public class Server implements Runnable {
      */
     public void run() {
         try {
+
+
             setupClientKeyStore();
             setupServerKeystore();
             setupSSLContext();
@@ -134,12 +142,23 @@ public class Server implements Runnable {
         return connections.iterator();
     }
 
+    ArrayList<AuthenticatedConnections> getAuthenticatedConnections() {
+        return ConnectedUsers;
+    }
     /**
      * Add a posting to the list of postings
      */
     void addPosting(Posting posting) {
         postings.add(posting);
         System.out.println("list is " + postings.size());
+    }
+
+    /**
+     * Add authenticated connection to list of authenticated connections
+     */
+    void addAuthenticatedUser(AuthenticatedConnections authenticatedConnections) {
+        ConnectedUsers.add(authenticatedConnections);
+        System.out.println("list of connections is " + ConnectedUsers.size());
     }
 
     /**
@@ -161,7 +180,5 @@ public class Server implements Runnable {
     System.out.println( "Done." );
     new Server( port );
 
-//    DataController dataController = new DataController();
-//    System.out.println(dataController.username_exists("Bob"));
     }
 }

@@ -4,22 +4,26 @@ import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 
-public class ConversationRequest extends Communication implements Interfaces.ConversationRequest{
+public class ConversationRequest {
 
+    private int code;
+    private String senderusername;
     private String recipientusername;
 
-    public ConversationRequest() {
+
+    private ConversationRequest() {
     }
 
     public ConversationRequest(int code, String username, String recipientusername) {
-        super(code, username);
+        this.code = code;
+        this.senderusername = username;
         this.recipientusername = recipientusername;
     }
 
     static ConversationRequest read(DataInputStream din) throws IOException {
         ConversationRequest conversationRequest = new ConversationRequest();
-        conversationRequest.setcode(din.readInt());
-        conversationRequest.username(din.readUTF());
+        conversationRequest.code = din.readInt() ;
+        conversationRequest.senderusername = din.readUTF();
         conversationRequest.recipientusername = din.readUTF();
 
         conversationRequest.toString();
@@ -27,8 +31,8 @@ public class ConversationRequest extends Communication implements Interfaces.Con
     }
 
     public void write(DataOutputStream dout) throws IOException {
-        dout.writeInt(this.getcode());
-        dout.writeUTF(this.username());
+        dout.writeInt(code);
+        dout.writeUTF(senderusername);
         dout.writeUTF(recipientusername);
 
         System.out.println("wrote " + this);
@@ -36,7 +40,7 @@ public class ConversationRequest extends Communication implements Interfaces.Con
     }
 
     public String toString() {
-        return this.getcode()+ this.username() + recipientusername;
+        return code+ senderusername + recipientusername;
     }
 
 
