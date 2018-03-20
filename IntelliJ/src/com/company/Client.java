@@ -137,13 +137,20 @@ public class Client extends JFrame implements Runnable {
                         break;
                     }
                     case 3 : code = 3;{
-                        Response  response= Response.read(din);
+                        Response  response = Response.read(din);
                         response.setcode(code);
                         String hostAndPort = response.username();
+                        System.out.println(response.username());
                         String host = hostAndPort.substring(0, hostAndPort.indexOf(':'));
                         int port = Integer.parseInt(hostAndPort.substring(hostAndPort.indexOf(':') + 1));
                         System.out.println(response.toString());
                         Client client = new Client(host , port);
+                        break;
+                    }
+                    case 4 : code = 4;{
+                        Message message = Message.read(din);
+                        message.setCode(code);
+                        System.out.println(message.toString());
                         break;
                     }
                 }
@@ -162,10 +169,9 @@ public class Client extends JFrame implements Runnable {
         }
     }
 
-    public void message_post(Client client, Message message){
+    public void sendMessage(Message message){
         try{
-            dout.write(1);
-            //posting.write(dout);
+            message.write(dout);
         }catch(IOException ie){
             ie.printStackTrace();
         }

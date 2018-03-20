@@ -24,7 +24,7 @@ public class ConversationRequest {
         conversationRequest.senderusername = din.readUTF();
         conversationRequest.recipientusername = din.readUTF();
 
-        System.out.println("login/register information read: " + conversationRequest);
+        System.out.println("Conversation request between " + conversationRequest);
         return conversationRequest;
     }
 

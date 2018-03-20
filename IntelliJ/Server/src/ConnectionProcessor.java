@@ -1,7 +1,6 @@
 import java.io.*;
 import java.net.Socket;
-import java.util.ArrayList;
-import java.util.Iterator;
+import java.util.*;
 
 public class ConnectionProcessor implements Runnable {
     /**
@@ -75,9 +74,7 @@ public class ConnectionProcessor implements Runnable {
     }
 
     private void sendReply(Posting posting) throws IOException {
-
-            server.getConnections();
-
+        server.getConnections();
     }
     /**
      * Send a new posting to this client
@@ -107,25 +104,19 @@ public class ConnectionProcessor implements Runnable {
             din2 = new DataInputStream(in);
             dout = new DataOutputStream(out);
 
-
-
             while (true) {
                 DataController sql = new DataController();
                 int code = Communication.inputtype(din);
-                //Posting posting = Posting.read( din );
-                //posting.code(code);
-
+//                Posting posting = Posting.read( din );
+//                posting.code(code);
 //                int code = din.readInt();
 //                System.out.println(code);
 //                Posting posting = Posting.read( din );
-
-
 //                din2 = din;
-                //process login or register
+//                process login or register
 //                String temp = din.readUTF();
 //                Posting posting = Posting.read( din );
-                //Communication communication = Communication.read(din2);
-
+//                Communication communication = Communication.read(din2);
                 switch(code) {
                     case 1 : code = 1;{
                         Posting posting = Posting.read(din);
@@ -162,31 +153,47 @@ public class ConnectionProcessor implements Runnable {
                             ConversationRequest conversationRequest = ConversationRequest.read(din);
                             conversationRequest.setcode(code);
                             ArrayList<AuthenticatedConnections> ConnectedUsers = server.getAuthenticatedConnections();
-                            Boolean user_exists = null;
+                            Boolean user_exists = false;
                             for (AuthenticatedConnections temp: ConnectedUsers) {
-                                if(conversationRequest.getRecipientUsername() == temp.getUsername()){
-                                    Response response = new Response(3, true, null, temp.getSocket().toString());
-                                    sendResponse(response);
-                                    user_exists = true;
-                                }else if(user_exists == true){
+                                //TODO reading desired person wrong
+                                if(conversationRequest.getRecipientUsername().equals(temp.getUsername())){
+                                    System.out.println("temp matches");
                                     Socket tempsocket = temp.getSocket();
                                     String hostAndPort = tempsocket.getInetAddress().getHostAddress();
-                                    hostAndPort = hostAndPort + ":" + tempsocket.getPort();
-                                    Response response = new Response(3, false, null, hostAndPort);
+                                    hostAndPort = hostAndPort + ":" + tempsocket.getLocalAddress();
+                                    Response response = new Response(3, true, true, hostAndPort);
                                     sendResponse(response);
+                                    user_exists = true;
                                 }
                             }
                         }
                         break;
                     }
+                    case 4 : code = 4;{
+                        Message message = Message.read(din);
+                        message.setCode(code);
+                        String recipient = message.getRecipientusername();
+                        ArrayList<AuthenticatedConnections> ConnectedUsers = server.getAuthenticatedConnections();
+                        for (AuthenticatedConnections temp : ConnectedUsers) {
+                            if(recipient.equals(temp.getUsername())){
+                                Socket tempSocket = temp.getSocket();
+                                Set<ConnectionProcessor> serverConnections = server.getServerConnections();
+                                for (ConnectionProcessor temp2: serverConnections) {
+                                    if (temp2.socket.equals(tempSocket)){
+                                        temp2.sendMessage(message);
+                                    }
+                                }
+                            }
+                        }
+//                        Iterator connections = server.getConnections();
+//                        ArrayList<AuthenticatedConnections> ConnectedUsers = server.getAuthenticatedConnections();
+//                        for (AuthenticatedConnections temp: ConnectedUsers) {
+//                        }
+                        break;
+                    }
                 }
-
                 server.getConnections();
-                //sendPosting(posting);
-                //processPosting(posting);
-                //sendExistingPostings();
             }
-
         } catch (IOException ie) {
             try {
                 socket.close();
@@ -195,8 +202,28 @@ public class ConnectionProcessor implements Runnable {
             }
 
             server.removeConnection(this);
+            ArrayList<AuthenticatedConnections> ConnectedUsers = server.getAuthenticatedConnections();
+            Iterator<AuthenticatedConnections> iterator = ConnectedUsers.iterator();
+            while(iterator.hasNext()){
+                AuthenticatedConnections temp = iterator.next();
+
+                if(temp.getSocket().equals(this.socket)){
+                    iterator.remove();
+                }
+            }
 
             System.out.println("Closed connection from socket " + socket);
         }
+    }
+
+    public Socket getSocket(){
+        return socket;
+    }
+
+    /**
+     * Send a message to this client
+     */
+    private void sendMessage(Message message) throws IOException {
+        message.write(dout);
     }
 }

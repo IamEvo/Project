@@ -1,3 +1,7 @@
+package Server;
+
+import com.company.Posting;
+
 import javax.net.ssl.*;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -54,7 +58,7 @@ public class Server implements Runnable {
     /**
      * Arraylist of users that are logged in
      */
-    ArrayList<AuthenticatedConnections> ConnectedUsers =new ArrayList<AuthenticatedConnections>();
+    //ArrayList<AuthenticatedConnections> ConnectedUsers =new ArrayList<AuthenticatedConnections>();
 
     /**
      * Create a Server that listens on the given port.
@@ -97,6 +101,7 @@ public class Server implements Runnable {
     public void run() {
         try {
 
+
             setupClientKeyStore();
             setupServerKeystore();
             setupSSLContext();
@@ -112,12 +117,13 @@ public class Server implements Runnable {
                 Socket socket = ss.accept();
                 System.out.println("Got connection from " + socket);
 
-                ConnectionProcessor cp = new ConnectionProcessor(this, socket);
-                connections.add(cp);
+//                Client client = new Client(this, socket);
+//                connections.add(cp);
 
 //                for (Iterator it = this.getConnections(); it.hasNext(); ) {
 //                    System.out.println("list " + it);
 //                }
+
             }
         } catch (GeneralSecurityException gse) {
             gse.printStackTrace();
@@ -139,12 +145,10 @@ public class Server implements Runnable {
     Iterator getConnections() {
         return connections.iterator();
     }
-    Set getServerConnections() {
-        return connections;
-    }
-    ArrayList<AuthenticatedConnections> getAuthenticatedConnections() {
-        return ConnectedUsers;
-    }
+
+//    ArrayList<AuthenticatedConnections> getAuthenticatedConnections() {
+//        return ConnectedUsers;
+//    }
     /**
      * Add a posting to the list of postings
      */
@@ -153,23 +157,16 @@ public class Server implements Runnable {
         System.out.println("list is " + postings.size());
     }
 
-//    /**
-//     * Add a posting to the list of postings
-//     */
-//    void addSendMessage(ConnectionProcessor connectionProcessor, Message message) {
-//        connectionProcessor
-//    }
-
     /**
      * Add authenticated connection to list of authenticated connections
      */
-    void addAuthenticatedUser(AuthenticatedConnections authenticatedConnections) {
-        ConnectedUsers.add(authenticatedConnections);
+//    void addAuthenticatedUser(AuthenticatedConnections authenticatedConnections) {
+//        ConnectedUsers.add(authenticatedConnections);
 //        System.out.println("list of connections has:  " + ConnectedUsers.size());
 //        for(AuthenticatedConnections temp : ConnectedUsers){
 //            System.out.println(temp.getUsername());
 //        }
-    }
+//    }
 
     /**
      * Return an iteration over visible postings
@@ -181,14 +178,7 @@ public class Server implements Runnable {
     /**
      * Create and start a Server.  The port number must
      */
-    static public void main(String args[]) {
-
-    int port = 4;
-    System.out.println( "Wait while secure random numbers are initialized." );
-    secureRandom = new SecureRandom();
-    secureRandom.nextInt();
-    System.out.println( "Done." );
-    new Server( port );
-
-    }
+//    static public void main(String args[]) {
+//
+//    }
 }

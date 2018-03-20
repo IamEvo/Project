@@ -59,7 +59,7 @@ public class Response implements Communication {
 
     @Override
     public String username() {
-        return null;
+        return username;
     }
 
     @Override

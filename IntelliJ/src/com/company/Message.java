@@ -5,23 +5,26 @@ import java.io.DataOutputStream;
 import java.io.IOException;
 
 public class Message {
+
     private int code;
-    private String username;
+    private String senderusername;
+    private String recipientusername;
     private String message;
 
     private Message() {
     }
 
-    public Message(int code, String username, String message) {
+    public Message(int code, String senderusername, String recipientusername, String message) {
         this.code = code;
-        this.username = username;
+        this.senderusername = senderusername;
+        this.recipientusername = recipientusername;
         this.message = message;
     }
 
     static Message read(DataInputStream din) throws IOException {
         Message message = new Message();
-        message.code = din.readInt();
-        message.username = din.readUTF();
+        message.senderusername = din.readUTF();
+        message.recipientusername = din.readUTF();
         message.message = din.readUTF();
 
         System.out.println("read " + message);
@@ -30,38 +33,47 @@ public class Message {
 
     public void write(DataOutputStream dout) throws IOException {
         dout.writeInt(code);
-        dout.writeUTF(username);
+        dout.writeUTF(senderusername);
+        dout.writeUTF(recipientusername);
         dout.writeUTF(message);
 
         System.out.println("wrote " + this);
         dout.flush();
     }
 
-    public int code() {
+    public int getCode() {
         return code;
     }
 
-    public void code(int code) {
+    public void setCode(int code) {
         this.code = code;
     }
 
-    public String text() {
-        return username;
+    public String getSenderusername() {
+        return senderusername;
     }
 
-    public void text(String text) {
-        this.username = text;
+    public void setSenderusername(String senderusername) {
+        this.senderusername = senderusername;
+    }
+
+    public String getRecipientusername() {
+        return recipientusername;
+    }
+
+    public void setRecipientusername(String recipientusername) {
+        this.recipientusername = recipientusername;
     }
 
     public String getMessage() {
         return message;
     }
 
-    public void setMessage(String password) {
+    public void setMessage(String message) {
         this.message = message;
     }
 
     public String toString() {
-        return code+ username + message;
+        return "Message: "+code+ senderusername + recipientusername + message;
     }
 }
