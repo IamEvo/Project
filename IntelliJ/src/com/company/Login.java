@@ -1,6 +1,8 @@
 package com.company;
 
 //TODO https://security.stackexchange.com/questions/7075/authentication-between-multiple-systems-platforms-within-the-same-web-applicatio/7076#7076
+import Protocols.Posting;
+
 import java.security.SecureRandom;
 
 public class Login {

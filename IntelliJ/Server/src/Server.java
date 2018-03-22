@@ -1,3 +1,5 @@
+import Protocols.Posting;
+
 import javax.net.ssl.*;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -55,6 +57,20 @@ public class Server implements Runnable {
      * Arraylist of users that are logged in
      */
     ArrayList<AuthenticatedConnections> ConnectedUsers =new ArrayList<AuthenticatedConnections>();
+
+    /**
+     * Create and start a Server.  The port number must
+     */
+    static public void main(String args[]) {
+
+        int port = 4;
+        System.out.println( "Wait while secure random numbers are initialized." );
+        secureRandom = new SecureRandom();
+        secureRandom.nextInt();
+        System.out.println( "Done." );
+        new Server( port );
+
+    }
 
     /**
      * Create a Server that listens on the given port.
@@ -115,9 +131,6 @@ public class Server implements Runnable {
                 ConnectionProcessor cp = new ConnectionProcessor(this, socket);
                 connections.add(cp);
 
-//                for (Iterator it = this.getConnections(); it.hasNext(); ) {
-//                    System.out.println("list " + it);
-//                }
             }
         } catch (GeneralSecurityException gse) {
             gse.printStackTrace();
@@ -153,22 +166,11 @@ public class Server implements Runnable {
         System.out.println("list is " + postings.size());
     }
 
-//    /**
-//     * Add a posting to the list of postings
-//     */
-//    void addSendMessage(ConnectionProcessor connectionProcessor, Message message) {
-//        connectionProcessor
-//    }
-
     /**
      * Add authenticated connection to list of authenticated connections
      */
     void addAuthenticatedUser(AuthenticatedConnections authenticatedConnections) {
         ConnectedUsers.add(authenticatedConnections);
-//        System.out.println("list of connections has:  " + ConnectedUsers.size());
-//        for(AuthenticatedConnections temp : ConnectedUsers){
-//            System.out.println(temp.getUsername());
-//        }
     }
 
     /**
@@ -178,17 +180,4 @@ public class Server implements Runnable {
         return postings.iterator();
     }
 
-    /**
-     * Create and start a Server.  The port number must
-     */
-    static public void main(String args[]) {
-
-    int port = 4;
-    System.out.println( "Wait while secure random numbers are initialized." );
-    secureRandom = new SecureRandom();
-    secureRandom.nextInt();
-    System.out.println( "Done." );
-    new Server( port );
-
-    }
 }

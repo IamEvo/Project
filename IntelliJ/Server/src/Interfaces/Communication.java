@@ -5,8 +5,6 @@ import java.io.IOException;
 
 public interface Communication {
 
-    public void write(DataOutputStream dout)throws IOException;
-
     public int getcode();
 
     public void setcode(int code);

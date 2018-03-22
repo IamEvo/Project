@@ -5,6 +5,8 @@
 
 package com.company;
 
+import Protocols.*;
+
 import java.security.SecureRandom;
 import java.util.concurrent.TimeUnit;
 
@@ -29,21 +31,18 @@ public class Main {
 
             TimeUnit.SECONDS.sleep(5);
 
-            Message message = new Message(4, "Jamie", "Sam", "Hello server");
-            client.sendMessage(message);
+            AuthConfirmationRequest authConfirmationRequest = new AuthConfirmationRequest(4, "Jamie", false);
+            client.newAuthenticationConfirmationRequest(authConfirmationRequest);
 
-//            String host = "192.168.0.18";
-//            System.out.println("Wait while secure random numbers are initialized....");
-//            secureRandom = new SecureRandom();
-//            secureRandom.nextInt();
-//            Client client = new Client(host, port);
+//            Message message = new Message(4, "Jamie", "Sam", "Hello server");
+//            client.sendMessage(message);
 //
 //            loginTest(client);
 //
 //            TimeUnit.SECONDS.sleep(5);
 //            ConversationRequest conversationRequest = new ConversationRequest(3, "Sam", "Jamie");
 //            client.newConversationRequest(conversationRequest);
-
+            TimeUnit.SECONDS.sleep(2);
             System.out.println("Done.");
         } catch (Exception var2) {
             System.out.println("ERROR: " + var2);
@@ -54,7 +53,7 @@ public class Main {
     public static void loginTest(Client client){
         Login login_session = new Login();
 
-        String username = "Jamie";
+        String username = "Jmie";
         String password = "mkyong1A@gwstrgtg";
 
         Boolean result = login_session.login(client, username, password);

@@ -1,12 +1,13 @@
 package com.company;
 
+import Protocols.*;
+
 import javax.net.ssl.*;
 import javax.swing.*;
 import java.io.*;
 import java.security.GeneralSecurityException;
 import java.security.KeyStore;
 import java.security.SecureRandom;
-import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -111,46 +112,32 @@ public class Client extends JFrame implements Runnable {
     public void run() {
         try {
             while (true) {
-                int code = Communication.inputtype(din);
 
-//                if (code == 1){
-//                    Response  response= Response.read(din);
-//                    response.setcode(code);
-//                    System.out.println(response.toString());
-//                }else if (code == 2){
-//                    Response  response= Response.read(din);
-//                    response.setcode(code);
-//                    System.out.println(response.toString());
-//                }
+                int code = Communication.inputtype(din);
 
                 switch(code) {
                     case 1 : code = 1;{
-                        Response  response= Response.read(din);
+                        Response response= Response.read(din);
                         response.setcode(code);
-                        System.out.println(response.toString());
                         break;
                     }
                     case 2 : code = 2;{
                         Response  response= Response.read(din);
                         response.setcode(code);
-                        System.out.println(response.toString());
                         break;
                     }
                     case 3 : code = 3;{
                         Response  response = Response.read(din);
                         response.setcode(code);
                         String hostAndPort = response.username();
-                        System.out.println(response.username());
                         String host = hostAndPort.substring(0, hostAndPort.indexOf(':'));
                         int port = Integer.parseInt(hostAndPort.substring(hostAndPort.indexOf(':') + 1));
-                        System.out.println(response.toString());
                         Client client = new Client(host , port);
                         break;
                     }
                     case 4 : code = 4;{
-                        Message message = Message.read(din);
-                        message.setCode(code);
-                        System.out.println(message.toString());
+                        AuthConfirmationRequest authConfirmationRequest = AuthConfirmationRequest.read(din);
+                        authConfirmationRequest.setcode(code);
                         break;
                     }
                 }
@@ -185,5 +172,11 @@ public class Client extends JFrame implements Runnable {
         }
     }
 
-
+    public void newAuthenticationConfirmationRequest(AuthConfirmationRequest authConfirmationRequest) {
+        try {
+            authConfirmationRequest.write(dout);
+        } catch (IOException ie) {
+            ie.printStackTrace();
+        }
+    }
 }
